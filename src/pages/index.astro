@@ -5,6 +5,49 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="Retrospectiva Poética - A Relatividade dos Encontros">
   <main class="relative bg-[#F5F2EB]">
+    <!-- CONTROLADOR DE ÁUDIO VINTAGE -->
+    <div
+      class="fixed top-4 right-4 z-50 flex items-center gap-3 bg-[#F5F2EB]/95 backdrop-blur-sm px-4 py-2 rounded-lg border border-[#2C3E2B]/15 font-mono text-[10px] text-[#2C3E2B] shadow-lg transition-all duration-300 hover:border-[#A65B43]/30"
+      id="audio-widget"
+    >
+      <button
+        id="audio-toggle-btn"
+        class="flex items-center gap-2 p-1 rounded hover:bg-[#2C3E2B]/5 cursor-pointer text-[10px] transition-colors"
+        aria-label="Alternar áudio"
+      >
+        <!-- Mini Equalizador / Ondas Sonoras -->
+        <div id="audio-equalizer" class="flex items-end gap-[2px] h-3 w-4">
+          <span class="eq-bar w-[2px] bg-[#A65B43] rounded-sm transition-all duration-300"></span>
+          <span class="eq-bar w-[2px] bg-[#A65B43] rounded-sm transition-all duration-300"></span>
+          <span class="eq-bar w-[2px] bg-[#A65B43] rounded-sm transition-all duration-300"></span>
+          <span class="eq-bar w-[2px] bg-[#A65B43] rounded-sm transition-all duration-300"></span>
+        </div>
+        <span id="audio-btn-icon" class="font-mono text-[#A65B43] font-bold">PLAY</span>
+      </button>
+      <div class="h-4 w-px bg-[#2C3E2B]/15"></div>
+      <div class="flex items-center gap-2">
+        <span class="opacity-60 text-[9px] uppercase tracking-wider">VOL</span>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          value="0.3"
+          id="audio-volume-slider"
+          class="w-16 h-1 bg-[#2C3E2B]/15 rounded-lg appearance-none cursor-pointer accent-[#A65B43] hover:accent-[#2C3E2B] transition-all"
+        />
+        <span id="audio-vol-percent" class="w-6 text-right font-mono text-[9px] opacity-60">30%</span>
+      </div>
+    </div>
+
+    <!-- Elemento HTML de Áudio -->
+    <audio
+      id="bg-audio"
+      loop
+      src="/fotos/3%20X%204(MP3_320K).mp3"
+      preload="auto"
+    ></audio>
+
     <!-- TEXTURA GLOBAL DE RUIDO VINTAGE -->
     <div
       class="fixed inset-0 pointer-events-none z-50 bg-[url('data:image/svg+xml,%3Csvg viewBox=\"

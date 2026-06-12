@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initDevVetCoexistence();
   initCodeHeartbeatDualism();
   initFooterBlurReveal();
+  initBackgroundAudio();
 });
 
 /**
@@ -316,4 +317,91 @@ function initFooterBlurReveal() {
       }
     );
   });
+}
+
+/**
+ * 6. SISTEMA DE ÁUDIO DE FUNDO
+ * Inicializa a música com controles retro de volume e tratamento 
+ * inteligente para políticas de reprodução automática do navegador.
+ */
+function initBackgroundAudio() {
+  const audio = document.getElementById("bg-audio");
+  const toggleBtn = document.getElementById("audio-toggle-btn");
+  const btnIcon = document.getElementById("audio-btn-icon");
+  const equalizer = document.getElementById("audio-equalizer");
+  const slider = document.getElementById("audio-volume-slider");
+  const percentText = document.getElementById("audio-vol-percent");
+  
+  if (!audio || !toggleBtn || !btnIcon || !slider || !percentText) return;
+
+  // Volume inicial configurado para 30% para não assustar o usuário
+  audio.volume = 0.3;
+  slider.value = 0.3;
+
+  let hasInteracted = false;
+
+  const playAudio = () => {
+    audio.play().then(() => {
+      btnIcon.textContent = "PAUSE";
+      if (equalizer) equalizer.classList.add("playing");
+      btnIcon.classList.add("text-[#2C3E2B]");
+      btnIcon.classList.remove("text-[#A65B43]");
+    }).catch(err => {
+      console.log("Autoplay bloqueado pelo navegador, aguardando clique de interação.");
+    });
+  };
+
+  const pauseAudio = () => {
+    audio.pause();
+    btnIcon.textContent = "PLAY";
+    if (equalizer) equalizer.classList.remove("playing");
+    btnIcon.classList.add("text-[#A65B43]");
+    btnIcon.classList.remove("text-[#2C3E2B]");
+  };
+
+  // Clique manual no botão de reprodução/pausa
+  toggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Evita bolhas de clique
+    hasInteracted = true;
+    if (audio.paused) {
+      playAudio();
+    } else {
+      pauseAudio();
+    }
+  });
+
+  // Alteração de volume pelo controle deslizante
+  slider.addEventListener("input", (e) => {
+    const vol = parseFloat(e.target.value);
+    audio.volume = vol;
+    percentText.textContent = `${Math.round(vol * 100)}%`;
+  });
+
+  // Tocar automaticamente no primeiro toque ou clique na página (Autoplay Bypass)
+  const startOnInteraction = () => {
+    if (!hasInteracted) {
+      hasInteracted = true;
+      playAudio();
+      
+      // Remove os escutadores globais depois de tocar
+      document.removeEventListener("click", startOnInteraction);
+      document.removeEventListener("keydown", startOnInteraction);
+      document.removeEventListener("touchstart", startOnInteraction);
+    }
+  };
+
+  document.addEventListener("click", startOnInteraction);
+  document.addEventListener("keydown", startOnInteraction);
+  document.addEventListener("touchstart", startOnInteraction);
+
+  // Acoplamento com a animação de scroll do Hero
+  const scrollIndicator = document.getElementById("hero-scroll-indicator");
+  if (scrollIndicator) {
+    scrollIndicator.addEventListener("click", () => {
+      if (!hasInteracted) {
+        hasInteracted = true;
+        playAudio();
+      }
+    });
+  }
 }
